@@ -21,7 +21,7 @@ class Configurator
         $data = Yaml::parse(file_get_contents($path));
 
         if (isset($data['imports'])) {
-            $data = $this->import($data);
+            $data = $this->import(dirname($path), $data);
         }
 
         if (!isset($data['parameters'])) {
@@ -50,12 +50,13 @@ class Configurator
         return self::$instance;
     }
 
-    private function import($data)
+    private function import($directory, $data)
     {
         if (isset($data['imports'])) {
             foreach ($data['imports'] as $path) {
-                $d    = Yaml::parse(file_get_contents($path));
-                $data = array_replace_recursive($data, $this->import($d));
+
+                $d    = Yaml::parse(file_get_contents($directory . '/' . $path));
+                $data = array_replace_recursive($data, $this->import($directory, $d));
             }
         }
         return $data;

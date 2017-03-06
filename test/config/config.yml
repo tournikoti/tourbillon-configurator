@@ -1,8 +1,8 @@
 ## YAML Template.
 ---
 imports:
-    - config/parameters.yml
-    - config/other.yml
+    - parameters.yml
+    - other.yml
 
 parameters:
     database_host: localhost
