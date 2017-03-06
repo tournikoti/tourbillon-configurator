@@ -1,5 +1,21 @@
 ## YAML Template.
 ---
+imports:
+    - config/security.yml
+    - config/admin.yml
+
+parameters:
+    database_host: localhost
+    database_port: null
+    database_name: gisele
+    database_user: root
+    database_password: null
+    mailer_transport: smtp
+    mailer_host: mailhost
+    mailer_user: null
+    mailer_password: null
+    mailer_from: null
+
 databases:
     default:
         driver:   pdo_mysql
