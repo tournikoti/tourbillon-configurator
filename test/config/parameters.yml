@@ -1,0 +1,5 @@
+## YAML Template.
+---
+parameters:
+    database_host: other
+    test: value 2

@@ -1,8 +1,8 @@
 ## YAML Template.
 ---
 imports:
-    - config/security.yml
-    - config/admin.yml
+    - config/parameters.yml
+    - config/other.yml
 
 parameters:
     database_host: localhost

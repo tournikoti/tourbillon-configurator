@@ -6,4 +6,5 @@ require '../vendor/autoload.php';
 
 $configurator = Configurator::getInstance('config.yml');
 
-$configurator->get('databases');
+var_dump($configurator->get('parameters'));
+var_dump($configurator->get('databases'));

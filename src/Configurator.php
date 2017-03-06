@@ -20,15 +20,15 @@ class Configurator
     {
         $data = Yaml::parse(file_get_contents($path));
 
+        if (isset($data['imports'])) {
+            $data = $this->import($data);
+        }
+
         if (!isset($data['parameters'])) {
             throw new RuntimeException("No parameters exist");
         }
 
         $this->parameters = $data['parameters'];
-
-        if (isset($data['imports'])) {
-            $data = $this->import($data);
-        }
 
         $this->data = $this->transform($data);
     }
@@ -55,7 +55,7 @@ class Configurator
         if (isset($data['imports'])) {
             foreach ($data['imports'] as $path) {
                 $d    = Yaml::parse(file_get_contents($path));
-                $data = array_merge($data, $this->import($d));
+                $data = array_replace_recursive($data, $this->import($d));
             }
         }
         return $data;
