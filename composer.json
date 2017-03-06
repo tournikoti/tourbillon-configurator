@@ -1,0 +1,21 @@
+{
+    "name": "gjean/tourbillon-configurator",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gwennael Jean",
+            "email": "gwennael.jean@trsb.net"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/yaml": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tourbillon\\Configurator\\": "src"
+        }
+    }
+}
