@@ -24,12 +24,7 @@ abstract class Configurator
             $data = $this->import(dirname($path), $data);
         }
 
-        if (!isset($data['parameters'])) {
-            throw new RuntimeException("No parameters exist");
-        }
-
-        $this->parameters = $data['parameters'];
-
+        $this->parameters = isset($data['parameters']) ? $data['parameters'] : array();
         $this->data = $this->transform($data);
     }
 
@@ -76,7 +71,9 @@ abstract class Configurator
 
     private function replace($matches)
     {
-        return $this->parameters[$matches[1]];
+        return array_key_exists($matches[1], $this->parameters)
+            ? $this->parameters[$matches[1]]
+            : $matches[0];
     }
 
     protected abstract function parse($path);
