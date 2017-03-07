@@ -2,6 +2,8 @@
 
 namespace Tourbillon\Configurator;
 
+use Exception;
+
 /**
  * Description of Configurator
  *
