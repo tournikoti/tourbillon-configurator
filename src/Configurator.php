@@ -10,7 +10,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @author gjean
  */
-class Configurator
+abstract class Configurator
 {
     private static $instance;
     private $parameters;
@@ -18,7 +18,7 @@ class Configurator
 
     public function __construct($path)
     {
-        $data = Yaml::parse(file_get_contents($path));
+        $data = $this->parse($path);
 
         if (isset($data['imports'])) {
             $data = $this->import(dirname($path), $data);
@@ -55,7 +55,7 @@ class Configurator
         if (isset($data['imports'])) {
             foreach ($data['imports'] as $path) {
 
-                $d    = Yaml::parse(file_get_contents($directory . '/' . $path));
+                $d    = $this->parse($directory . '/' . $path);
                 $data = array_replace_recursive($data, $this->import($directory, $d));
             }
         }
@@ -79,4 +79,5 @@ class Configurator
         return $this->parameters[$matches[1]];
     }
 
+    protected abstract function parse($path);
 }

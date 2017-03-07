@@ -1,10 +1,10 @@
 <?php
 
-use Tourbillon\Configurator\Configurator;
+use Tourbillon\Configurator\ConfiguratorFactory;
 
 require '../vendor/autoload.php';
 
-$configurator = Configurator::getInstance('config/config.yml');
+$configurator = ConfiguratorFactory::createInstance('config/yaml/config.yml');
 
 var_dump($configurator->get('parameters'));
 var_dump($configurator->get('databases'));
