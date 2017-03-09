@@ -28,6 +28,20 @@ abstract class Configurator
         $this->data = $this->transform($data);
     }
 
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    public function getParameter($name)
+    {
+        if (!array_key_exists($name, $this->parameters)) {
+            throw new Exception("Parameter {$name} does not exist");
+        }
+        
+        return $this->parameters[$name];
+    }
+
     public function get($name)
     {
         if (!isset($this->data[$name])) {
