@@ -3,7 +3,6 @@
 namespace Tourbillon\Configurator;
 
 use Symfony\Component\Yaml\Exception\RuntimeException;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Description of Configurator
@@ -14,7 +13,8 @@ abstract class Configurator
 {
     private static $instance;
     private $parameters = array();
-    private $data = array();
+    private $data       = array();
+    private $level      = 0;
 
     public function __construct($path)
     {
@@ -31,7 +31,7 @@ abstract class Configurator
         if (!array_key_exists($name, $this->parameters)) {
             throw new Exception("Parameter {$name} does not exist");
         }
-        
+
         return $this->parameters[$name];
     }
 
@@ -64,7 +64,7 @@ abstract class Configurator
         if (isset($data['imports'])) {
             foreach ($data['imports'] as $path) {
 
-                $d    = $this->parse($directory . '/' . $path);
+                $d    = $this->parse($directory.'/'.$path);
                 $data = array_replace_recursive($data, $this->import($directory, $d));
             }
         }
@@ -74,8 +74,15 @@ abstract class Configurator
     private function transform($data)
     {
         foreach ($data as $key => $val) {
+
+            if ($this->level === 0 && (null === $val || empty($val))) {
+                $val = array();
+            }
+
             if (is_array($val)) {
+                $this->levelUp();
                 $data[$key] = $this->transform($val);
+                $this->levelDown();
             } else {
                 $data[$key] = preg_replace_callback('/%([^%]*)%/', array($this, 'replace'), $val);
             }
@@ -85,9 +92,7 @@ abstract class Configurator
 
     private function replace($matches)
     {
-        return array_key_exists($matches[1], $this->parameters)
-            ? $this->parameters[$matches[1]]
-            : $matches[0];
+        return array_key_exists($matches[1], $this->parameters) ? $this->parameters[$matches[1]] : $matches[0];
     }
 
     public static function getInstance($path)
@@ -96,6 +101,16 @@ abstract class Configurator
             self::$instance = new self($path);
         }
         return self::$instance;
+    }
+
+    private function levelUp()
+    {
+        $this->level++;
+    }
+
+    private function levelDown()
+    {
+        $this->level--;
     }
 
     protected abstract function parse($path);
