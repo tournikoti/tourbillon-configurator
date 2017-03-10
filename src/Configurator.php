@@ -40,6 +40,8 @@ abstract class Configurator
         }
 
         $this->parameters = array_replace_recursive($this->parameters, $result);
+
+        var_dump($this->transform($this->parameters)); exit;
     }
 
     public function getParameter($name)
@@ -53,13 +55,7 @@ abstract class Configurator
             $temp = &$temp[$n];
         }
 
-        var_dump($temp); exit;
-
-        if (!array_key_exists($name, $this->parameters)) {
-            throw new Exception("Parameter {$name} does not exist");
-        }
-
-        return $this->parameters[$name];
+        return $temp;
     }
 
     public function get($name)
@@ -116,10 +112,10 @@ abstract class Configurator
         }
         return $data;
     }
-
+    
     private function replace($matches)
     {
-        return array_key_exists($matches[1], $this->parameters) ? $this->parameters[$matches[1]] : $matches[0];
+        return $this->getParameter($matches[1]);
     }
 
     public static function getInstance($path)
