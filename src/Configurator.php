@@ -40,8 +40,7 @@ abstract class Configurator
         }
 
         $this->parameters = array_replace_recursive($this->parameters, $result);
-
-        var_dump($this->transform($this->parameters)); exit;
+        $this->parameters = $this->transform($this->parameters);
     }
 
     public function getParameter($name)
