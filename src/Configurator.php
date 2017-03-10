@@ -13,19 +13,12 @@ use Symfony\Component\Yaml\Yaml;
 abstract class Configurator
 {
     private static $instance;
-    private $parameters;
-    private $data;
+    private $parameters = array();
+    private $data = array();
 
     public function __construct($path)
     {
-        $data = $this->parse($path);
-
-        if (isset($data['imports'])) {
-            $data = $this->import(dirname($path), $data);
-        }
-
-        $this->parameters = isset($data['parameters']) ? $data['parameters'] : array();
-        $this->data = $this->transform($data);
+        $this->importFile($path);
     }
 
     public function getParameters()
@@ -51,12 +44,19 @@ abstract class Configurator
         return $this->data[$name];
     }
 
-    public static function getInstance($path)
+    public function importFile($path)
     {
-        if (null === self::$instance) {
-            self::$instance = new self($path);
+        $data = $this->parse($path);
+
+        if (isset($data['imports'])) {
+            $data = $this->import(dirname($path), $data);
         }
-        return self::$instance;
+
+        if (array_key_exists('parameters', $data)) {
+            $this->parameters = array_replace_recursive($this->parameters, empty($data['parameters']) ? array() : $data['parameters']);
+        }
+
+        $this->data = array_replace_recursive($this->data, $this->transform($data));
     }
 
     private function import($directory, $data)
@@ -88,6 +88,14 @@ abstract class Configurator
         return array_key_exists($matches[1], $this->parameters)
             ? $this->parameters[$matches[1]]
             : $matches[0];
+    }
+
+    public static function getInstance($path)
+    {
+        if (null === self::$instance) {
+            self::$instance = new self($path);
+        }
+        return self::$instance;
     }
 
     protected abstract function parse($path);

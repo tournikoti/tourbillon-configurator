@@ -2,6 +2,7 @@
 
 namespace Tourbillon\Configurator;
 
+use Tourbillon\Configurator\Configurator;
 use Exception;
 
 /**
@@ -11,6 +12,12 @@ use Exception;
  */
 abstract class ConfiguratorFactory
 {
+    /**
+     *
+     * @param type $path
+     * @return Configurator
+     * @throws Exception
+     */
     public static function createInstance($path)
     {
         $class = __NAMESPACE__ . '\\Driver\\' . ucfirst(strtolower(pathinfo($path, PATHINFO_EXTENSION))) . 'Configurator';
