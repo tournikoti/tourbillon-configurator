@@ -2,7 +2,7 @@
 
 namespace Tourbillon\Configurator;
 
-use Symfony\Component\Yaml\Exception\RuntimeException;
+use Exception;
 
 /**
  * Description of Configurator
@@ -26,8 +26,35 @@ abstract class Configurator
         return $this->parameters;
     }
 
+    public function setParameters($array)
+    {
+        $result = array();
+
+        foreach($array as $path => $value) {
+            $temp = &$result;
+
+            foreach(explode('.', $path) as $key) {
+                $temp =& $temp[$key];
+            }
+            $temp = $value;
+        }
+
+        $this->parameters = array_replace_recursive($this->parameters, $result);
+    }
+
     public function getParameter($name)
     {
+        $temp = $this->parameters;
+        foreach(explode('.', $name) as $key => $n) {
+            if (!array_key_exists($n, $temp)) {
+                throw new Exception("Parameter {$name} does not exist");
+            }
+
+            $temp = &$temp[$n];
+        }
+
+        var_dump($temp); exit;
+
         if (!array_key_exists($name, $this->parameters)) {
             throw new Exception("Parameter {$name} does not exist");
         }
@@ -38,7 +65,7 @@ abstract class Configurator
     public function get($name)
     {
         if (!isset($this->data[$name])) {
-            throw new RuntimeException("Configuration for {$name} does not exist");
+            throw new Exception("Configuration for {$name} does not exist");
         }
 
         return $this->data[$name];
