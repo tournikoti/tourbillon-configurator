@@ -106,7 +106,11 @@ abstract class Configurator
                 $data[$key] = $this->transform($val);
                 $this->levelDown();
             } else {
-                $data[$key] = preg_replace_callback('/%([^%]*)%/', array($this, 'replace'), $val);
+                if (preg_match('/^%([^%]*)%$/', $val, $match)) {
+                    $data[$key] = $this->getParameter($match[1]);
+                } else {
+                    $data[$key] = preg_replace_callback('/%([^%]*)%/', array($this, 'replace'), $val);
+                }
             }
         }
         return $data;
