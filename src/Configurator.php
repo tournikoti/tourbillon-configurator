@@ -57,9 +57,14 @@ abstract class Configurator
         return $temp;
     }
 
+    public function has($name)
+    {
+        return isset($this->data[$name]);
+    }
+
     public function get($name)
     {
-        if (!isset($this->data[$name])) {
+        if (!$this->has($name)) {
             throw new Exception("Configuration for {$name} does not exist");
         }
 
